@@ -76,22 +76,7 @@ render() {
     for (let i = 0; i < this.goods.length; i++) {
       sumPrice += this.goods[i].price;
     }
-  }
-  addToCart(){
-//
-  }
-  removeFromCart(){
-//
-  }
-
-}
-
-class Cart {
-  constructor(){
-    this.cart = [];
-  }
-  getCartList(){
-    //
+    return sumPrice;
   }
 }
 
@@ -103,3 +88,72 @@ list.fetchGoods()
 .catch((error)=>{
   console.log(error);
 })
+
+class CartItem extends GoodsItem {
+  constructor(id, product_name, price, quantity){
+    super(id,product_name,price)
+    this.quantity = quantity;
+  }
+/*render(){
+  return `
+  <div class="cartWrapper_flex">
+  <div class="cartItem_name">Товар</div>
+  <div class="cartItem_quantity"> 1 </div>
+  <div class="cartItem_price"> 50 000 </div>
+  <div class="cartItem_sum"> 0 </div>
+</div>
+<div class="totalCartValue">
+  Товаров в корзине на сумму: $0
+</div>
+  `
+}*/
+}
+
+class CartList extends GoodsList {
+  constructor(){
+    super(this.goods)
+    this.cart = [];
+  }
+  renderItemInCart(){
+    ////
+  }
+  addItemToCart(){
+    return new Promise((resolve, reject) => {
+      makeGETRequest(`${API_URL}/addToBasket.json`)
+      .then((goods) =>{
+        this.goods = JSON.parse(goods);
+        resolve();
+      })
+      .catch((error)=>{
+        console.log(error);
+        reject(error);
+      })
+})
+  }
+  remItemFromCart(){
+    return new Promise((resolve, reject) => {
+      makeGETRequest(`${API_URL}/deleteFromBasket.json`)
+      .then((goods) =>{
+        this.goods = JSON.parse(goods);
+        resolve();
+      })
+      .catch((error)=>{
+        console.log(error);
+        reject(error);
+      })
+})
+  }
+  getCartList(){
+    return new Promise((resolve, reject) => {
+      makeGETRequest(`${API_URL}/getBasket.json`)
+      .then((goods) =>{
+        this.goods = JSON.parse(goods);
+        resolve();
+      })
+      .catch((error)=>{
+        console.log(error);
+        reject(error);
+      })
+})
+  }
+}
